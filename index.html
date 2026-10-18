@@ -155,7 +155,20 @@
         const progressText = document.getElementById("progress-text");
         const taskCount = document.getElementById("task-count");
 
-        let tasks = JSON.parse(localStorage.getItem("daily_quests")) || [];
+        // Lấy ngày hiện tại theo định dạng YYYY-MM-DD
+        const today = new Date().toISOString().split("T")[0];
+        const savedDate = localStorage.getItem("daily_quest_date");
+
+        let tasks = [];
+
+        // Nếu là ngày mới khác với ngày đã lưu, tiến hành làm sạch danh sách
+        if (savedDate !== today) {
+          localStorage.setItem("daily_quest_date", today);
+          localStorage.setItem("daily_quests", JSON.stringify([]));
+        } else {
+          tasks = JSON.parse(localStorage.getItem("daily_quests")) || [];
+        }
+
         renderTasks();
 
         taskForm.addEventListener("submit", function (event) {
@@ -192,7 +205,6 @@
               saveAndRender();
             });
 
-            // Kiểm tra xem nhiệm vụ này có đang trong chế độ sửa hay không
             if (task.isEditing) {
               const editInput = document.createElement("input");
               editInput.type = "text";
@@ -203,7 +215,6 @@
               saveBtn.textContent = "Lưu";
               saveBtn.style.padding = "4px 8px";
 
-              // Khi bấm Lưu hoặc nhấn Enter
               const saveChanges = () => {
                 const val = editInput.value.trim();
                 if (val !== "") {
@@ -267,6 +278,7 @@
 
         function saveAndRender() {
           localStorage.setItem("daily_quests", JSON.stringify(tasks));
+          localStorage.setItem("daily_quest_date", today);
           renderTasks();
         }
 
