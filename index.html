@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Quest</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        color: #333;
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 20px;
+      }
+      header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .player-card,
+      .task-section {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      .progress-bar {
+        background: #e0e0e0;
+        border-radius: 4px;
+        height: 12px;
+        overflow: hidden;
+        margin: 10px 0;
+      }
+      #progress {
+        background: #4caf50;
+        height: 100%;
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+      form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+      input[type="text"] {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        padding: 8px 16px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+      li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+      }
+      .task-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+      }
+      li.completed span {
+        text-decoration: line-through;
+        color: #888;
+      }
+      .edit-btn {
+        background: #ffc107;
+        color: #333;
+        padding: 4px 10px;
+        font-size: 12px;
+        font-weight: bold;
+      }
+      .edit-btn:hover {
+        background: #e0a800;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>⚔️ Daily Quest</h1>
+      <p>Turn your daily tasks into an adventure.</p>
+    </header>
+
+    <main>
+      <section class="player-card">
+        <h2>Tiến độ hoàn thành</h2>
+        <div class="progress-bar">
+          <div id="progress"></div>
+        </div>
+        <p id="progress-text">0% hoàn thành</p>
+      </section>
+
+      <section class="task-section">
+        <h2>Nhiệm vụ hôm nay</h2>
+
+        <form id="task-form">
+          <input
+            type="text"
+            id="task-input"
+            placeholder="Nhập nhiệm vụ..."
+            required
+          />
+          <button type="submit">Thêm</button>
+        </form>
+
+        <ul id="task-list"></ul>
+
+        <p id="task-count">0 / 0 nhiệm vụ hoàn thành</p>
+      </section>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const taskForm = document.getElementById("task-form");
+        const taskInput = document.getElementById("task-input");
+        const taskList = document.getElementById("task-list");
+        const progress = document.getElementById("progress");
+        const progressText = document.getElementById("progress-text");
+        const taskCount = document.getElementById("task-count");
+
+        let completedTasks = 0;
+        let totalTasks = 0;
+
+        taskForm.addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const taskName = taskInput.value.trim();
+          if (taskName === "") return;
+
+          totalTasks++;
+
+          const li = document.createElement("li");
+
+          const taskInfo = document.createElement("div");
+          taskInfo.className = "task-info";
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+
+          const span = document.createElement("span");
+          span.textContent = taskName;
+
+          taskInfo.appendChild(checkbox);
+          taskInfo.appendChild(span);
+
+          // Nút Sửa (tích hợp cả sửa tên và xóa nhiệm vụ)
+          const editBtn = document.createElement("button");
+          editBtn.textContent = "Sửa";
+          editBtn.className = "edit-btn";
+
+          checkbox.addEventListener("change", function () {
+            if (checkbox.checked) {
+              completedTasks++;
+              li.classList.add("completed");
+            } else {
+              completedTasks--;
+              li.classList.remove("completed");
+            }
+            updateStats();
+          });
+
+          editBtn.addEventListener("click", function () {
+            const newName = prompt(
+              "Chỉnh sửa nội dung nhiệm vụ (Để trống hoặc nhấn Hủy nếu muốn Xóa nhiệm vụ):",
+              span.textContent,
+            );
+
+            if (newName === null) {
+              // Người dùng bấm Hủy -> Không làm gì cả
+              return;
+            }
+
+            const trimmedName = newName.trim();
+            if (trimmedName === "") {
+              // Nếu để trống nội dung -> Tiến hành xóa nhiệm vụ
+              if (checkbox.checked) {
+                completedTasks--;
+              }
+              totalTasks--;
+              li.remove();
+            } else {
+              // Cập nhật tên mới cho nhiệm vụ
+              span.textContent = trimmedName;
+            }
+            updateStats();
+          });
+
+          li.appendChild(taskInfo);
+          li.appendChild(editBtn);
+          taskList.appendChild(li);
+
+          taskInput.value = "";
+          taskInput.focus();
+
+          updateStats();
+        });
+
+        function updateStats() {
+          let percent = 0;
+          if (totalTasks > 0) {
+            percent = Math.round((completedTasks / totalTasks) * 100);
+          }
+
+          progress.style.width = percent + "%";
+          progressText.textContent = `${percent}% hoàn thành`;
+          taskCount.textContent = `${completedTasks} / ${totalTasks} nhiệm vụ hoàn thành`;
+        }
+      });
+    </script>
+  </body>
+</html>
