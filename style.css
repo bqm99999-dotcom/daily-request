@@ -1,120 +1,247 @@
-* {
-  box-sizing: border-box;
+/* --- style.css --- */
+
+/* Khởi tạo các biến màu cho Dark Mode */
+:root {
+  --bg-color: #0f172a; /* Nền tối sâu */
+  --card-bg: #1e293b; /* Nền thẻ */
+  --text-primary: #f8fafc; /* Chữ trắng gần tuyệt đối */
+  --text-secondary: #94a3b8; /* Chữ xám */
+  --primary-neon: #38bdf8; /* Xanh dương neon */
+  --success-neon: #4ade80; /* Xanh lá neon */
+  --warning-neon: #fbbf24; /* Vàng neon (cho nút Sửa) */
+  --danger-neon: #f87171; /* Đỏ neon (cho nút Xóa) */
+  --border-color: #334155; /* Màu viền */
 }
 
+/* 1. Thiết lập cơ bản cho toàn trang */
 body {
-  margin: 0;
-  padding: 30px 20px;
-  font-family: Arial, sans-serif;
-  background: #111827;
-  color: #f3f4f6;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  transition: background-color 0.3s ease; /* Hiệu ứng chuyển mượt */
 }
 
+/* 2. Tiêu đề trang */
 header {
   text-align: center;
-  margin-bottom: 35px;
+  margin-bottom: 30px;
 }
 
 header h1 {
-  color: #f5c76a;
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+  color: var(--primary-neon);
+  /* Hiệu ứng phát sáng neon cho tiêu đề */
+  text-shadow:
+    0 0 10px rgba(56, 189, 248, 0.7),
+    0 0 20px rgba(56, 189, 248, 0.5);
 }
 
 header p {
-  color: #9ca3af;
+  color: var(--text-secondary);
+  font-size: 1rem;
 }
 
-main {
-  max-width: 700px;
-  margin: auto;
-}
-
+/* 3. Các thẻ (Card) container */
 .player-card,
 .task-section {
-  background: #1f2937;
+  background-color: var(--card-bg);
   padding: 24px;
-  border-radius: 14px;
+  border-radius: 16px; /* Bo góc tròn hơn */
   margin-bottom: 24px;
+  border: 1px solid var(--border-color);
+  /* Hiệu ứng bóng đổ và phát sáng nhẹ cho thẻ */
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.5),
+    0 0 15px -2px rgba(56, 189, 248, 0.15);
 }
 
-.player-card h2 {
-  color: #f5c76a;
+.player-card h2,
+.task-section h2 {
+  font-size: 1.25rem;
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: var(--text-primary);
 }
 
+/* 4. Thanh tiến trình (Progress Bar) */
 .progress-bar {
-  height: 10px;
-  background: #374151;
-  border-radius: 10px;
+  background-color: #334155; /* Nền thanh xám tối */
+  border-radius: 999px;
+  height: 16px;
   overflow: hidden;
+  margin: 16px 0 10px 0;
+  border: 1px solid #475569;
 }
 
 #progress {
-  width: 0%;
+  /* Màu xanh lá neon phát sáng */
+  background: linear-gradient(90deg, #22c55e, var(--success-neon));
   height: 100%;
-  background: #f5c76a;
-  transition: width 0.3s;
+  width: 0%;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Chuyển động mượt */
+  border-radius: 999px;
+  /* Hiệu ứng phát sáng neon cho thanh */
+  box-shadow: 0 0 15px 2px rgba(74, 222, 128, 0.7);
 }
 
-#task-form {
+#progress-text {
+  text-align: right;
+  font-size: 0.9rem;
+  color: var(--success-neon);
+  margin: 0;
+  font-weight: 700;
+}
+
+/* 5. Form nhập nhiệm vụ */
+form {
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  margin-bottom: 24px;
 }
 
-#task-input {
+input[type="text"] {
   flex: 1;
-  min-width: 0;
-  padding: 12px;
-  border: 1px solid #4b5563;
-  border-radius: 8px;
-  background: #111827;
-  color: white;
+  padding: 12px 16px;
+  background-color: rgba(15, 23, 42, 0.6); /* Tối và hơi trong suốt */
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  outline: none;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
-button {
-  padding: 12px 18px;
+input[type="text"]:focus {
+  border-color: var(--primary-neon);
+  /* Phát sáng khi focus */
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+/* Nút "Thêm" */
+#task-form button {
+  padding: 12px 24px;
+  background-color: var(--primary-neon);
+  color: #0f172a; /* Chữ tối trên nền sáng */
   border: none;
-  border-radius: 8px;
-  background: #f5c76a;
-  color: #111827;
-  font-weight: bold;
+  border-radius: 10px;
   cursor: pointer;
+  font-weight: 700;
+  font-size: 1rem;
+  transition:
+    background-color 0.2s,
+    transform 0.1s,
+    box-shadow 0.2s;
 }
 
-#task-list {
+#task-form button:hover {
+  background-color: #7dd3fc; /* Sáng hơn khi hover */
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.7);
+}
+
+#task-form button:active {
+  transform: scale(0.97); /* Hiệu ứng nhấn */
+}
+
+/* 6. Danh sách nhiệm vụ */
+ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
-#task-list li {
+li {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: #273449;
-  padding: 14px;
-  border-radius: 8px;
-  margin-top: 10px;
+  justify-content: space-between;
+  padding: 16px;
+  background-color: rgba(15, 23, 42, 0.4); /* Tối nhẹ */
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  gap: 12px;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
-#task-list li span {
+li:hover {
+  border-color: #475569;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Thông tin nhiệm vụ */
+.task-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
   flex: 1;
-  overflow-wrap: anywhere;
+  word-break: break-all; /* Tránh tràn chữ */
 }
 
-#task-list li.completed span {
+/* Checkbox */
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--success-neon); /* Màu khi tích */
+}
+
+/* CSS cho nhiệm vụ đã hoàn thành */
+li.completed span {
   text-decoration: line-through;
-  color: #9ca3af;
+  color: var(--text-secondary);
+  opacity: 0.7;
 }
 
-@media (max-width: 480px) {
-  body {
-    padding: 20px 12px;
-  }
+/* 7. Các nút Sửa và Xóa */
+.actions {
+  display: flex;
+  gap: 8px;
+}
 
-  .player-card,
-  .task-section {
-    padding: 16px;
-  }
+.edit-btn,
+.delete-btn {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  font-weight: 700;
+}
 
-  #task-form button {
-    padding: 12px;
-  }
+/* Nút Sửa neon vàng */
+.edit-btn {
+  background-color: transparent;
+  color: var(--warning-neon);
+  border: 2px solid var(--warning-neon);
+}
+.edit-btn:hover {
+  background-color: var(--warning-neon);
+  color: #0f172a;
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
+}
+
+/* Nút Xóa neon đỏ */
+.delete-btn {
+  background-color: transparent;
+  color: var(--danger-neon);
+  border: 2px solid var(--danger-neon);
+}
+.delete-btn:hover {
+  background-color: var(--danger-neon);
+  color: #0f172a;
+  box-shadow: 0 0 15px rgba(248, 113, 113, 0.6);
+}
+
+/* 8. Text đếm ở cuối */
+#task-count {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  text-align: center;
+  margin-top: 20px;
+  font-weight: 600;
 }
